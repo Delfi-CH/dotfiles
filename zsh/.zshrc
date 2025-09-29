@@ -1,3 +1,5 @@
+sleep 0.1 && /usr/bin/fastfetch
+
 # The following lines were added by compinstall
 zstyle ':completion:*' completer _complete _ignored _approximate
 zstyle ':completion:*' ignore-parents pwd
@@ -42,9 +44,26 @@ parse_git_dirty() {
   [[ $(git status --porcelain 2> /dev/null) != "" ]] && echo "*"
 }
 
+# Check if its a GUI-Terminal-Emulator (Konsole, Gnome-Terminal) or on the tty and ajust theme
 
-source ~/.zsh/themes/agnoster.zsh-theme
-setopt promptsubst
+if [[ -o interactive ]]; then
+  cmdtty_output=$(tty)
+
+  if [[ $cmdtty_output =~ ^/dev/tty ]]; then
+    # Running on a real tty (Ctrl+Alt+F1-6)
+    # Example prompt setting for redhat style
+    PROMPT='%F{red}%n@%m %1~ %#%f '  # Customize as needed
+  elif [[ $cmdtty_output =~ ^/dev/pts ]]; then
+    # Running inside a terminal emulator
+    source ~/.zsh/themes/agnoster.zsh-theme
+    setopt promptsubst
+  else
+    # fallback prompt
+    PROMPT='%n@%m %1~ %# '
+  fi
+fi
+
+
 
 
 bindkey -e  # Use Emacs keybindings (default)
@@ -53,3 +72,9 @@ bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
 alias ls="ls -A"
+alias edit="msedit"
+alias zsh="clear && zsh"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
