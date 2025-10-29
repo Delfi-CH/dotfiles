@@ -71,7 +71,7 @@ bindkey "\e[3~" delete-char
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
-alias ls="ls -A"
+alias ls="ls -A --color"
 alias edit="msedit"
 alias zsh="clear && zsh"
 
